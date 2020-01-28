@@ -152,11 +152,11 @@ IO.FormatFuncs = {
         -- if math.abs(diff) > 990 then		--roznica (w setkach) powyzej 990 bo bedzie pepega przy uwzglednianiu 1kk zycia 
             -- diff = math.floor(diff / 100) / 10
             -- result = result .. "k"
-        -- elseif math.abs(health) > 99 then
-            -- diff = math.floor(diff)
-            -- numFormat = "%d"
-        -- else
-            -- diff = math.floor(diff * 10) / 10
+        -- else					--elseifa wywalic w pineche bo psuje przy wiekszych cyferkach np zamiast -1,2kk jest -2kk xd
+            -- diff = math.floor(diff * 10) / 10	
+		-- if (math.abs(diff)*10)%10 == 0 then -- zeby ladnie wygladalo 9.0 -> 9
+			-- numFormat = "%d"
+		-- end
         -- end
         -- result = string.format(numFormat .. "%s", diff, result)
 
