@@ -141,7 +141,7 @@ IO.FormatFuncs = {
         -- local diff = health - maxHealth
         -- if diff == 0 then return "" end
 		
-        -- if math.abs(diff) < 751 then
+        -- if math.abs(diff) < 999 then		--warunek dla roznicy mniejszej niz 999
             -- return string.format("%d", diff)
         -- end
 
@@ -149,7 +149,7 @@ IO.FormatFuncs = {
             -- result = result .. "k"
             -- diff = diff / 1000
         -- end
-        -- if math.abs(diff) > 750 then
+        -- if math.abs(diff) > 990 then		--roznica (w setkach) powyzej 990 bo bedzie pepega przy uwzglednianiu 1kk zycia 
             -- diff = math.floor(diff / 100) / 10
             -- result = result .. "k"
         -- elseif math.abs(health) > 99 then
@@ -164,27 +164,25 @@ IO.FormatFuncs = {
     -- end
 ---------------------------------------------------------------------------------------------------------
 	--Wyswietlanie z obecnym HP:
-		    local hp = health
-			if hp == 0 then return "" end
+	local hp = health
+	if hp == 0 then return "" end
 			
-			if hp < 999 then
-             return string.format("%d", hp)
-			end
-			
-            while hp / 1000 > 1.0 do
+	if hp < 999 then
+        	return string.format("%d", hp) --numFormat = "%d" - zamienia na format double -> nie float, czyli bez %.0
+	end		
+	while hp / 1000 > 1.0 do
+	        result = result .. "k"
+		hp = hp / 1000
+        end
+        if hp > 900 then			--setki jezeli powyzej 900 to (dla 999 222)
+       		hp = math.floor(hp / 100) / 10	-- podloga z np. (9.99222) /10 -> 9.9/10 ->0.99
                 result = result .. "k"
-				hp = hp / 1000
-            end
-            if hp > 750 then
-                hp = math.floor(hp / 100) / 10
-                result = result .. "k"
-            elseif hp > 99 then
-                hp = math.floor(hp)
-				numFormat = "%d"
-			else 
-				hp = math.floor(hp * 10) / 10
-            end
-        result = string.format(numFormat .. "%s", hp, result)
+	else 
+		hp = math.floor(hp * 10) / 10 --jezeli nie to (dla 293.805) ->293.8
+		
+	end
+        
+	result = string.format(numFormat .. "%s", hp, result)
 
         return result
     end
