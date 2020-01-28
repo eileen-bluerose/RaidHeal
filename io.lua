@@ -179,7 +179,9 @@ IO.FormatFuncs = {
                 result = result .. "k"
 	else 
 		hp = math.floor(hp * 10) / 10 --jezeli nie to (dla 293.805) ->293.8
-		
+		if (hp*10)%10 == 0 then	--no to ten tego
+		    numFormat = "%d"
+		end
 	end
         
 	result = string.format(numFormat .. "%s", hp, result)
