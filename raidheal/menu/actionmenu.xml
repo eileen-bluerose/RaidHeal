@@ -1,0 +1,643 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/UI.xsd">
+    <Frame name="RH_ActionMenu_ListItemTemplate" virtual="true" enableMouse="true">
+        <Size>
+            <AbsDimension x="234" y="20"/>
+        </Size>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture name="$parent_Icon">
+                    <Size>
+                        <AbsDimension x="20" y="20"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="LEFT">
+                            <Offset>
+                                <AbsDimension x="5" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+                <FontString name="$parent_Text" inherits="GameFontHighlight" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="200" y="20"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT">
+                            <Offset>
+                                <AbsDimension x="-5" y="0"/>
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parent_Icon"/>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="HIGHLIGHT">
+                <Texture name="$parent_Highlight" alphaMode="ADD" file="interface/buttons/listitemhighlight.tga">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                this.Icon = getglobal(this:GetName() .. "_Icon")
+                this.Text = getglobal(this:GetName() .. "_Text")
+                this.Highlight = getglobal(this:GetName() .. "_Highlight")
+
+                this.Highlight:Hide()
+            </OnLoad>
+            <OnEnter>
+                this.Highlight:Show()
+            </OnEnter>
+            <OnLeave>
+                this.Highlight:Hide()
+            </OnLeave>
+            <OnClick>
+                RaidHeal.Menu.ActionMenu.OnScrollSelectClick(this:GetID())
+            </OnClick>
+            <OnMouseWheel>
+                local slider = getglobal(this:GetParent():GetName() .. "_Slider")
+
+                local oldValue = slider:GetValue()
+                local newValue = 1
+
+                if delta > 0 then
+                    newValue = oldValue - 1
+                else
+                    newValue = oldValue + 1
+                end
+
+                slider:SetValue(newValue)
+                --RaidHeal.Menu.ActionMenu.UpdateScrollSelect()
+            </OnMouseWheel>
+        </Scripts>
+    </Frame>
+
+    <Frame name="RH_ActionMenu" hidden="true" parent="UIParent">
+        <Size>
+            <AbsDimension x="640" y="480"/>
+        </Size>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Frames>
+            <Frame name="$parent_DetailsPanel" inherits="RH_TooltipBackdrop" enableMouse="true">
+                <Size>
+                    <AbsDimension x="250" y="360"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Frames>
+                    <Frame name="$parent_Title">
+                        <Anchors>
+                            <Anchor point="TOPLEFT">
+                                <Offset>
+                                    <AbsDimension x="10" y="10"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT">
+                                <Offset>
+                                    <AbsDimension x="-10" y="40"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="ARTWORK">
+                                <Texture name="$parent_Icon" file="Interface/icons/2h_axe20_000_001">
+                                    <TexCoords left="0" right="1" top="0" bottom="1"/>
+                                    <Size>
+                                        <AbsDimension x="24" y="24"/>
+                                    </Size>
+                                    <Anchors>
+                                        <Anchor point="LEFT">
+                                            <Offset>
+                                                <AbsDimension x="3" y="0"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                </Texture>
+                                <FontString name="$parent_Desc" inherits="GameFontHighlight" text="Title text" justifyH="LEFT">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_Icon">
+                                            <Offset>
+                                                <AbsDimension x="8" y="0"/>
+                                            </Offset>
+                                        </Anchor>
+                                        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+                                            <Offset>
+                                                <AbsDimension x="-3" y="-3"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                </FontString>
+                            </Layer>
+                            <Layer level="BORDER">
+                                <Texture file="Interface/Common/PanelSeparate-HorizontalLine">
+                                    <Size>
+                                        <AbsDimension x="0" y="4"/>
+                                    </Size>
+                                    <Anchors>
+                                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT">
+                                            <Offset>
+                                                <AbsDimension x="5" y="0"/>
+                                            </Offset>
+                                        </Anchor>
+                                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                                            <Offset>
+                                                <AbsDimension x="-5" y="0"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                        <Scripts>
+                            <OnLoad>
+                                this._icon = getglobal(this:GetName() .. "_Icon")
+                                this._text = getglobal(this:GetName() .. "_Desc")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Info">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Title">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Title">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Size>
+                            <AbsDimension x="0" y="50"/>
+                        </Size>
+                        <Layers>
+                            <Layer level="ARTWORK">
+                                <FontString inherits="GameFontHighlight" name="$parent_Desc1" justifyH="LEFT">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT"/>
+                                    </Anchors>
+                                    <Size>
+                                        <AbsDimension x="100" y="20"/>
+                                    </Size>
+                                </FontString>
+                                <FontString inherits="GameFontHighlight" name="$parent_Desc2" justifyH="LEFT">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Desc1">
+                                            <Offset>
+                                                <AbsDimension x="0" y="5"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                    <Size>
+                                        <AbsDimension x="100" y="20"/>
+                                    </Size>
+                                </FontString>
+                                <FontString inherits="GameFontHighlight" name="$parent_Value1" justifyH="RIGHT">
+                                    <Anchors>
+                                        <!--<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_Desc1"/>-->
+                                        <Anchor point="TOPLEFT">
+                                            <Offset>
+                                                <AbsDimension x="100" y="0"/>
+                                            </Offset>
+                                        </Anchor>
+                                        <Anchor point="TOPRIGHT"/>
+                                    </Anchors>
+                                    <Size>
+                                        <AbsDimension x="130" y="20"/>
+                                    </Size>
+                                </FontString>
+                                <FontString inherits="GameFontHighlight" name="$parent_Value2" justifyH="RIGHT">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_Desc2"/>
+                                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Value1">
+                                            <Offset>
+                                                <AbsDimension x="0" y="5"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                    <Size>
+                                        <AbsDimension x="130" y="20"/>
+                                    </Size>
+                                </FontString>
+                            </Layer>
+                            <Layer level="BORDER">
+                                <Texture file="Interface/Common/PanelSeparate-HorizontalLine">
+                                    <Size>
+                                        <AbsDimension x="0" y="4"/>
+                                    </Size>
+                                    <Anchors>
+                                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT">
+                                            <Offset>
+                                                <AbsDimension x="5" y="-2"/>
+                                            </Offset>
+                                        </Anchor>
+                                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                                            <Offset>
+                                                <AbsDimension x="-5" y="-2"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                    </Frame>
+                    <Frame name="$parent_Target">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Info"/>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Info"/>
+                        </Anchors>
+                        <Size>
+                            <AbsDimension x="0" y="75"/>
+                        </Size>
+                        <Layers>
+                            <Layer>
+                                <FontString name="$parent_DescFree" inherits="GameFontHighlight" justifyH="LEFT">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT"/>
+                                    </Anchors>
+                                    <Size>
+                                        <AbsDimension x="100" y="20"/>
+                                    </Size>
+                                </FontString>
+                                <FontString name="$parent_DescSelect" inherits="GameFontHighlight" justifyH="LEFT">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_DescFree">
+                                            <Offset>
+                                                <AbsDimension x="0" y="5"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                    <Size>
+                                        <AbsDimension x="100" y="20"/>
+                                    </Size>
+                                </FontString>
+                                <FontString name="$parent_DescExperts" inherits="GameFontHighlight" justifyH="LEFT">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_DescSelect">
+                                            <Offset>
+                                                <AbsDimension x="0" y="5"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                    <Size>
+                                        <AbsDimension x="100" y="20"/>
+                                    </Size>
+                                </FontString>
+                            </Layer>
+                            <Layer level="BORDER">
+                                <Texture file="Interface/Common/PanelSeparate-HorizontalLine">
+                                    <Size>
+                                        <AbsDimension x="0" y="4"/>
+                                    </Size>
+                                    <Anchors>
+                                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT">
+                                            <Offset>
+                                                <AbsDimension x="5" y="-2"/>
+                                            </Offset>
+                                        </Anchor>
+                                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT">
+                                            <Offset>
+                                                <AbsDimension x="-5" y="-2"/>
+                                            </Offset>
+                                        </Anchor>
+                                    </Anchors>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                        <Frames>
+                            <CheckButton name="$parent_CheckBtnIsFree" inherits="UIPanelCheckButtonTemplate">
+                                <Size>
+                                    <AbsDimension x="20" y="20"/>
+                                </Size>
+                                <Anchors>
+                                    <Anchor point="TOPRIGHT">
+                                        <Offset>
+                                            <AbsDimension x="-5" y="3"/>
+                                        </Offset>
+                                    </Anchor>
+                                </Anchors>
+                                <Scripts>
+                                    <OnClick>
+                                        RaidHeal.Menu.ActionMenu.OnFreeTargetingChanged()
+                                    </OnClick>
+                                </Scripts>
+                            </CheckButton>
+                            <Button name="$parent_BtnSelectTarget" inherits="UIPanelButtonTemplate">
+                                <Size>
+                                    <AbsDimension x="100" y="20"/>
+                                </Size>
+                                <Anchors>
+                                    <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_CheckBtnIsFree">
+                                        <Offset>
+                                            <AbsDimension x="0" y="5"/>
+                                        </Offset>
+                                    </Anchor>
+                                </Anchors>
+                                <Scripts>
+                                    <OnLoad>
+                                        UIDropDownMenu_Initialize(this, RaidHeal.Menu.ActionMenu.CreateSelectTargetList)
+                                        UIDropDownMenu_SetAnchor(this, 3, -3, "TOPLEFT", "BOTTOMLEFT", this:GetName())
+                                    </OnLoad>
+                                    <OnClick>
+                                        ToggleDropDownMenu(this)
+                                    </OnClick>
+                                </Scripts>
+                            </Button>
+                            <EditBox name="$parent_EditExperts" inherits="UIPanelEditBoxTemplate">
+                                <Size>
+                                    <AbsDimension x="0" y="20"/>
+                                </Size>
+                                <Anchors>
+                                    <Anchor point="BOTTOMRIGHT">
+                                        <Offset>
+                                            <AbsDimension x="-5" y="-5"/>
+                                        </Offset>
+                                    </Anchor>
+                                    <Anchor point="BOTTOMLEFT">
+                                        <Offset>
+                                            <AbsDimension x="100" y="-5"/>
+                                        </Offset>
+                                    </Anchor>
+                                </Anchors>
+                                <Scripts>
+                                    <OnEditFocusLost>
+                                        RaidHeal.Menu.ActionMenu.OnExpertTargetChanged()
+                                    </OnEditFocusLost>
+                                    <OnEnterPressed>
+                                        this:ClearFocus()
+                                    </OnEnterPressed>
+                                    <OnEscapePressed>
+                                        this:ClearFocus()
+                                    </OnEscapePressed>
+                                </Scripts>
+                            </EditBox>
+                        </Frames>
+                    </Frame>
+                    <Button name="$parent_SaveButton" inherits="UIPanelButtonTemplate">
+                        <Size>
+                            <AbsDimension x="80" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT">
+                                <Offset>
+                                    <AbsDimension x="-10" y="-5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                RaidHeal.Menu.ActionMenu.Save()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Button name="$parent_AbortButton" inherits="UIPanelButtonTemplate">
+                        <Size>
+                            <AbsDimension x="80" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT">
+                                <Offset>
+                                    <AbsDimension x="-100" y="-5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnShow>
+                                this:SetText(RaidHeal.IO.Format("AM_ABORTBUTTON_DESC"))
+                            </OnShow>
+                            <OnClick>
+                                this:GetParent():GetParent():Hide()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                </Frames>
+                <Scripts>
+                    <OnMouseDown>
+                        this:GetParent():StartMoving()
+                    </OnMouseDown>
+                    <OnMouseUp>
+                        this:GetParent():StopMovingOrSizing()
+                    </OnMouseUp>
+                    <OnEscapePressed>
+                        this:GetParent():Hide()
+                    </OnEscapePressed>
+                </Scripts>
+            </Frame>
+
+            <Frame name="$parent_SelectActionPanel" inherits="RH_TooltipBackdrop" enableMouse="true" hidden="true">
+                <Size>
+                    <AbsDimension x="300" y="300"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                </Anchors>
+                <Frames>
+                    <Button name="$parent_SelectSkill" inherits="UIPanelButtonTemplate">
+                        <Size>
+                            <AbsDimension x="280" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT">
+                                <Offset>
+                                    <AbsDimension x="10" y="15"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                RaidHeal.Menu.ActionMenu.SetSelectMode("SKILL")
+                                RaidHeal.Menu.ActionMenu.ShowAction()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Button name="$parent_SelectAction" inherits="UIPanelButtonTemplate">
+                        <Size>
+                            <AbsDimension x="280" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_SelectSkill">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                RaidHeal.Menu.ActionMenu.SetSelectMode("ACTION")
+                                RaidHeal.Menu.ActionMenu.ShowAction()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Button name="$parent_SelectExtra" inherits="UIPanelButtonTemplate">
+                        <Size>
+                            <AbsDimension x="280" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_SelectAction">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                RaidHeal.Menu.ActionMenu.SetSelectMode("EXTRA")
+                                RaidHeal.Menu.ActionMenu.ShowAction()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Frame name="$parent_ScrollSelect" enableMouse="true">
+                        <Size>
+                            <AbsDimension x="250" y="160"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_SelectExtra">
+                                <Offset>
+                                    <AbsDimension x="-15" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Frames>
+                            <Slider name="$parent_Slider" inherits="UIPanelScrollBarHaveBackdropTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPRIGHT">
+                                        <Offset>
+                                            <AbsDimension x="0" y="20"/>
+                                        </Offset>
+                                    </Anchor>
+                                    <Anchor point="BOTTOMRIGHT">
+                                        <Offset>
+                                            <AbsDimension x="0" y="-20"/>
+                                        </Offset>
+                                    </Anchor>
+                                </Anchors>
+                                <Scripts>
+                                    <OnMouseWheel>
+                                        local oldValue = this:GetValue()
+                                        local newValue = 1
+
+                                        if delta > 0 then
+                                            newValue = oldValue - 1
+                                        else
+                                            newValue = oldValue + 1
+                                        end
+
+                                        this:SetValue(newValue)
+                                        --RaidHeal.Menu.ActionMenu.UpdateScrollSelect()
+                                    </OnMouseWheel>
+                                    <OnValueChanged>
+                                        RaidHeal.Menu.ActionMenu.UpdateScrollSelect()
+                                        UIPanelScrollBar_OnValueChanged( this, arg1 )
+                                    </OnValueChanged>
+                                    <OnLoad>
+                                        this:SetValueStepMode("INT")
+                                    </OnLoad>
+                                </Scripts>
+                            </Slider>
+
+                            <Frame name="$parent_ListItem1" id="1" inherits="RH_ActionMenu_ListItemTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT"/>
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parent_ListItem2" id="2" inherits="RH_ActionMenu_ListItemTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ListItem1"/>
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parent_ListItem3" id="3" inherits="RH_ActionMenu_ListItemTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ListItem2"/>
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parent_ListItem4" id="4" inherits="RH_ActionMenu_ListItemTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ListItem3"/>
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parent_ListItem5" id="5" inherits="RH_ActionMenu_ListItemTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ListItem4"/>
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parent_ListItem6" id="6" inherits="RH_ActionMenu_ListItemTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ListItem5"/>
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parent_ListItem7" id="7" inherits="RH_ActionMenu_ListItemTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ListItem6"/>
+                                </Anchors>
+                            </Frame>
+                            <Frame name="$parent_ListItem8" id="8" inherits="RH_ActionMenu_ListItemTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ListItem7"/>
+                                </Anchors>
+                            </Frame>
+                        </Frames>
+                        <Scripts>
+                            <OnMouseWheel>
+                                local slider = getglobal(this:GetName() .. "_Slider")
+
+                                local oldValue = slider:GetValue()
+                                local newValue = 1
+
+                                if delta > 0 then
+                                    newValue = oldValue - 1
+                                else
+                                    newValue = oldValue + 1
+                                end
+
+                                slider:SetValue(newValue)
+                                --RaidHeal.Menu.ActionMenu.UpdateScrollSelect()
+                            </OnMouseWheel>
+                        </Scripts>
+                    </Frame>
+                    <Button name="$parent_AbortButton" inherits="UIPanelButtonTemplate">
+                        <Size>
+                            <AbsDimension x="80" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT">
+                                <Offset>
+                                    <AbsDimension x="-10" y="-5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnShow>
+                                this:SetText(RaidHeal.IO.Format("AM_ABORTBUTTON_DESC"))
+                            </OnShow>
+                            <OnClick>
+                                this:GetParent():GetParent():Hide()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                </Frames>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnShow>
+                RaidHeal.Menu.ActionMenu.OnShow()
+            </OnShow>
+            <OnHide>
+                RaidHeal.Menu.ActionMenu.OnHide()
+            </OnHide>
+            <OnEscapePressed>
+                this:Hide()
+            </OnEscapePressed>
+        </Scripts>
+    </Frame>
+</Ui>

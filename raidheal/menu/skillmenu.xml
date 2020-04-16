@@ -1,0 +1,581 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/UI.xsd">
+    <Frame name="RH_SkillMenu_IconButtonTemplate" virtual="true" enableMouse="true">
+        <Size>
+            <AbsDimension x="32" y="32"/>
+        </Size>
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture name="$parent_Texture" file="interface/icons/elf_skill/skill_dru1-2.dds">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+            <Layer level="HIGHLIGHT">
+                <Texture name="$parent_Border" file="interface/addons/raidheal/graphics/highlight.tga">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                local name = this:GetName()
+                this.Border = getglobal(name .. "_Border")
+                this.Texture = getglobal(name .. "_Texture")
+
+                this.Texture:Hide()
+            </OnLoad>
+            <OnEnter>
+                this.Border:SetColor(0.8, 0.6, 0)
+            </OnEnter>
+            <OnLeave>
+                this.Border:SetColor(unpack(this.Color or { 1, 1, 1 }))
+            </OnLeave>
+            <OnShow>
+                this.Border:SetColor(unpack(this.Color or { 1, 1, 1 }))
+            </OnShow>
+            <OnClick>
+                --RaidHeal.Menu.SkillMenu.OnIconButtonClick(this, key)
+            </OnClick>
+            <OnMouseDown>
+                RaidHeal.Menu.SkillMenu.OnIconButtonClick(this, key)
+            </OnMouseDown>
+        </Scripts>
+    </Frame>
+
+    <Frame name="RH_SkillMenu" inherits="RH_BaseFrame" enableMouse="true" hidden="true" frameStrata="HIGH">
+        <Size>
+            <AbsDimension x="390" y="510"/>
+        </Size>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString inherits="GameFontHighlight" name="$parent_TitleText" justifyV="MIDDLE">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="8"/>
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="TOPRIGHT">
+                            <Offset>
+                                <AbsDimension x="-20" y="25"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+
+                <FontString inherits="GameFontHighlight" name="$parent_TextMainClass" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="15" y="35"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextSubClass" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="200" y="35"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+
+                <FontString inherits="GameFontHighlight" name="$parent_TextMouseRight">
+                    <Size>
+                        <AbsDimension x="70" y="50"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT">
+                            <Offset>
+                                <AbsDimension x="-15" y="65"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextMouseMiddle">
+                    <Size>
+                        <AbsDimension x="70" y="50"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parent_TextMouseRight">
+                            <Offset>
+                                <AbsDimension x="-10" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextMouseLeft">
+                    <Size>
+                        <AbsDimension x="70" y="50"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parent_TextMouseMiddle">
+                            <Offset>
+                                <AbsDimension x="-10" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextNone" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextMouseLeft">
+                            <Offset>
+                                <AbsDimension x="-10" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextCtrl" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextNone">
+                            <Offset>
+                                <AbsDimension x="0" y="10"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextAlt" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextCtrl">
+                            <Offset>
+                                <AbsDimension x="0" y="10"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextShift" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextAlt">
+                            <Offset>
+                                <AbsDimension x="0" y="10"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextCtrlAlt" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextShift">
+                            <Offset>
+                                <AbsDimension x="0" y="10"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextCtrlShift" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextCtrlAlt">
+                            <Offset>
+                                <AbsDimension x="0" y="10"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextAltShift" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextCtrlShift">
+                            <Offset>
+                                <AbsDimension x="0" y="10"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" name="$parent_TextCtrlAltShift" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextAltShift">
+                            <Offset>
+                                <AbsDimension x="0" y="10"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+
+                <FontString inherits="GameFontHighlight" justifyH="LEFT" name="$parent_TextRevive">
+                    <Size>
+                        <AbsDimension x="200" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextCtrlAltShift">
+                            <Offset>
+                                <AbsDimension x="20" y="30"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString inherits="GameFontHighlight" justifyH="LEFT" name="$parent_TextReviveExtra">
+                    <Size>
+                        <AbsDimension x="200" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_TextRevive">
+                            <Offset>
+                                <AbsDimension x="0" y="10"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+
+        <Frames>
+            <Button name="$parent_DropDownMainClass" inherits="UIPanelButtonTemplate">
+                <Size>
+                    <AbsDimension x="75" y="25"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="115" y="35"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        UIDropDownMenu_Initialize(this, function() RaidHeal.Menu.SkillMenu.CreateDropDown(true) end)
+                    </OnLoad>
+                    <OnClick>
+                        UIDropDownMenu_SetAnchor(this, 0, 0, "TOP", "BOTTOM", this:GetName())
+                        ToggleDropDownMenu(this)
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parent_DropDownSubClass" inherits="UIPanelButtonTemplate">
+                <Size>
+                    <AbsDimension x="75" y="25"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="300" y="35"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        UIDropDownMenu_Initialize(this, function() RaidHeal.Menu.SkillMenu.CreateDropDown(false) end)
+                    </OnLoad>
+                    <OnClick>
+                        UIDropDownMenu_SetAnchor(this, 0, 0, "TOP", "BOTTOM", this:GetName())
+                        ToggleDropDownMenu(this)
+                    </OnClick>
+                </Scripts>
+            </Button>
+
+            <Frame name="$parent_IconBtnRight" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-34" y="112"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnRightCtrl" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnRight">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnRightAlt" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnRightCtrl">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnRightShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnRightAlt">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnRightCtrlAlt" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnRightShift">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnRightCtrlShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnRightCtrlAlt">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnRightAltShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnRightCtrlShift">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnRightCtrlAltShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnRightAltShift">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+
+            <Frame name="$parent_IconBtnMiddle" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parent_IconBtnRight">
+                        <Offset>
+                            <AbsDimension x="-48" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnMiddleCtrl" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnMiddle">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnMiddleAlt" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnMiddleCtrl">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnMiddleShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnMiddleAlt">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnMiddleCtrlAlt" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnMiddleShift">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnMiddleCtrlShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnMiddleCtrlAlt">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnMiddleAltShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnMiddleCtrlShift">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnMiddleCtrlAltShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnMiddleAltShift">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+
+            <Frame name="$parent_IconBtnLeft" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parent_IconBtnMiddle">
+                        <Offset>
+                            <AbsDimension x="-48" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnLeftCtrl" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnLeft">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnLeftAlt" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnLeftCtrl">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnLeftShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnLeftAlt">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnLeftCtrlAlt" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnLeftShift">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnLeftCtrlShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnLeftCtrlAlt">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnLeftAltShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnLeftCtrlShift">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnLeftCtrlAltShift" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnLeftAltShift">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+
+            <Frame name="$parent_IconBtnRevive" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnRightCtrlAltShift">
+                        <Offset>
+                            <AbsDimension x="-20" y="23"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+            <Frame name="$parent_IconBtnReviveExtra" inherits="RH_SkillMenu_IconButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="BOTTOM" relativeTo="$parent_IconBtnRevive">
+                        <Offset>
+                            <AbsDimension x="0" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+        </Frames>
+
+        <Scripts>
+            <OnShow>
+                local function getText(textID) return (RaidHeal.Menu.GetText(textID)) end
+
+                RH_SkillMenu_TitleText:SetText(getText("SM_TITLETEXT"))
+
+                RH_SkillMenu_TextMainClass:SetText(getText("SM_TEXTMAINCLASS"))
+                RH_SkillMenu_TextSubClass:SetText(getText("SM_TEXTSUBCLASS"))
+
+                RH_SkillMenu_TextMouseRight:SetText(getText("SM_TEXTRIGHT"))
+                RH_SkillMenu_TextMouseMiddle:SetText(getText("SM_TEXTMIDDLE"))
+                RH_SkillMenu_TextMouseLeft:SetText(getText("SM_TEXTLEFT"))
+
+                RH_SkillMenu_TextNone:SetText(getText("SM_TEXTNONE"))
+
+                RH_SkillMenu_TextCtrl:SetText(getText("SM_TEXTCTRL"))
+                RH_SkillMenu_TextAlt:SetText(getText("SM_TEXTALT"))
+                RH_SkillMenu_TextShift:SetText(getText("SM_TEXTSHIFT"))
+
+                RH_SkillMenu_TextCtrlAlt:SetText(getText("SM_TEXTCTRLALT"))
+                RH_SkillMenu_TextCtrlShift:SetText(getText("SM_TEXTCTRLSHIFT"))
+                RH_SkillMenu_TextAltShift:SetText(getText("SM_TEXTALTSHIFT"))
+
+                RH_SkillMenu_TextCtrlAltShift:SetText(getText("SM_TEXTCTRLALTSHIFT"))
+
+                RH_SkillMenu_TextRevive:SetText(getText("SM_TEXTREVIVE"))
+                RH_SkillMenu_TextReviveExtra:SetText(getText("SM_TEXTREVIVEEXTRA"))
+
+                RaidHeal.Menu.SkillMenu.OnShow()
+            </OnShow>
+            <OnHide>
+                RaidHeal.Menu.SkillMenu.OnHide()
+            </OnHide>
+            <OnMouseDown>
+                this:StartMoving()
+            </OnMouseDown>
+            <OnMouseUp>
+                this:StopMovingOrSizing()
+            </OnMouseUp>
+        </Scripts>
+    </Frame>
+</Ui>

@@ -1,0 +1,1559 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/UI.xsd">
+    <Frame name="RH_ConfigMenu_TreeNodeTemplate" virtual="true" enableMouse="true">
+        <Size>
+            <AbsDimension x="160" y="25"/>
+        </Size>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parent_Display" inherits="GameFontHighlight" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPRIGHT"/>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="25" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="HIGHLIGHT">
+                <Texture name="$parent_Highlight" alphaMode="ADD" file="interface\Buttons\ListItemHighlight" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT">
+                            <Offset>
+                                <AbsDimension x="0" y="25"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Frames>
+            <CheckButton name="$parent_Expanded">
+                <Size>
+                    <AbsDimension x="22" y="22"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="1" y="1"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <CheckedTexture file="interface/buttons/minusbutton_normal">
+                    <TexCoords left="0" right="0.6875" top="0" bottom="0.6875"/>
+                </CheckedTexture>
+                <DisabledCheckedTexture file="interface/buttons/minusbutton_disable">
+                    <TexCoords left="0" right="0.6875" top="0" bottom="0.6875"/>
+                </DisabledCheckedTexture>
+                <NormalTexture file="interface/buttons/plusbutton_normal">
+                    <TexCoords left="0" right="0.6875" top="0" bottom="0.6875"/>
+                </NormalTexture>
+                <PushedTexture file="interface/buttons/minusbutton_depress">
+                    <TexCoords left="0" right="0.6875" top="0" bottom="0.6875"/>
+                </PushedTexture>
+                <DisabledTexture file="interface/buttons/plusbutton_disable">
+                    <TexCoords left="0" right="0.6875" top="0" bottom="0.6875"/>
+                </DisabledTexture>
+                <HighlightTexture file="Interface\Buttons\PanelSmallButtonHighlight" alphaMode="ADD">
+                </HighlightTexture>
+                <Scripts>
+                    <OnClick>
+                        local parent = this:GetParent()
+                        parent:UpdateExpanded()
+                    </OnClick>
+                </Scripts>
+            </CheckButton>
+            <Frame name="$parent_Catch" enableMouse="true">
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="25"/>
+                        </Offset>
+                    </Anchor>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="25" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Frame>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                local parent = this:GetParent()
+                local id = this:GetID()
+
+                if id then
+                    if not parent.nodes then parent.nodes = {} end
+                    parent.nodes[id] = this
+                end
+
+                if not this.nodes then this.nodes = {} end
+                this.expandButton = getglobal(this:GetName() .. "_Expanded")
+                this.Text = getglobal(this:GetName() .. "_Display")
+                this.highlight = getglobal(this:GetName() .. "_Highlight")
+
+                this.CalcHeight = function(self)
+                    local height = 25
+
+                    if self.expandButton:IsChecked() then
+                        for id, child in pairs(self.nodes) do
+                            if child.CalcHeight then
+                                height = height + child:CalcHeight()
+                            else
+                                height = height + child:GetHeight()
+                            end
+                        end
+                    end
+
+                    return height
+                end
+
+                this.UpdateExpanded = function(self)
+                    if self.expandButton:IsChecked() and next(self.nodes) ~= nil then
+                        self:SetHeight(self:CalcHeight())
+
+                        for id, child in pairs(self.nodes) do
+                            child.Index = id
+                            child:Show()
+                        end
+                    else
+                        self:SetHeight(25)
+
+                        for id, child in pairs(self.nodes) do
+                            child:Hide()
+                        end
+                    end
+
+                    local parent = self:GetParent()
+                    if parent.UpdateExpanded then parent:UpdateExpanded() end
+                end
+            </OnLoad>
+            <OnShow>
+                this:UpdateExpanded()
+            </OnShow>
+            <OnEnter>
+                this.highlight:Show()
+                this.expandButton:LockHighlight()
+            </OnEnter>
+            <OnLeave>
+                this.highlight:Hide()
+                this.expandButton:UnlockHighlight()
+            </OnLeave>
+            <OnClick>
+                this.expandButton:SetChecked(not this.expandButton:IsChecked())
+                this:UpdateExpanded()
+            </OnClick>
+            <OnMouseWheel>
+                local slider = RH_ConfigMenu_Slider
+                if delta > 0 then
+                slider:SetValue(slider:GetValue() - 25)
+                else
+                slider:SetValue(slider:GetValue() + 25)
+                end
+            </OnMouseWheel>
+        </Scripts>
+    </Frame>
+
+    <Frame name="RH_ConfigMenu_TreeChildTemplate" virtual="true" enableMouse="true">
+        <Size>
+            <AbsDimension x="135" y="25"/>
+        </Size>
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parent_Display" inherits="GameFontHighlight" justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="100" y="25"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT"/>
+                        <Anchor point="LEFT">
+                            <Offset>
+                                <AbsDimension x="25" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+            <Layer level="HIGHLIGHT">
+                <Texture name="$parent_Highlight" alphaMode="ADD" file="interface\Buttons\ListItemHighlight" hidden="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT"/>
+                        <Anchor point="BOTTOMRIGHT"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                local parent = this:GetParent()
+                local id = this:GetID()
+
+                if id then
+                    if not parent.nodes then parent.nodes = {} end
+                    parent.nodes[id] = this
+                end
+
+                this.Text = getglobal(this:GetName() .. "_Display")
+                this.highlight = getglobal(this:GetName() .. "_Highlight")
+            </OnLoad>
+            <OnEnter>
+                this.highlight:Show()
+            </OnEnter>
+            <OnLeave>
+                if not this._select then
+                    this.highlight:Hide()
+                end
+            </OnLeave>
+            <OnMouseWheel>
+                local slider = RH_ConfigMenu_Slider
+                if delta > 0 then
+                    slider:SetValue(slider:GetValue() - 25)
+                else
+                    slider:SetValue(slider:GetValue() + 25)
+                end
+            </OnMouseWheel>
+        </Scripts>
+    </Frame>
+
+    <Frame name="RH_ConfigMenu_PageTemplate" virtual="true" enableMouse="true">
+        <Anchors>
+            <Anchor point="TOPLEFT">
+                <Offset>
+                    <AbsDimension x="200" y="35"/>
+                </Offset>
+            </Anchor>
+            <Anchor point="BOTTOMRIGHT">
+                <Offset>
+                    <AbsDimension x="-10" y="-15"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+        <Frames>
+            <Button name="$parent_SaveButton" inherits="UIPanelButtonTemplate">
+                <Size>
+                    <AbsDimension x="80" y="20"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-10" y="-10"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnShow>
+                        this:SetText(RaidHeal.IO.Format("CM_PAGE_SAVEBUTTON_DESC"))
+                    </OnShow>
+                    <OnClick>
+                        RaidHeal.Menu.ConfigMenu.SavePage()
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parent_SaveButton" inherits="UIPanelButtonTemplate">
+                <Size>
+                    <AbsDimension x="80" y="20"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-100" y="-10"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnShow>
+                        this:SetText(RaidHeal.IO.Format("CM_PAGE_RESETBUTTON_DESC"))
+                    </OnShow>
+                    <OnClick>
+                        RaidHeal.Menu.ConfigMenu.SavePage()
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+    </Frame>
+
+    <Frame name="RH_ConfigMenu" inherits="RH_BaseFrame" hidden="true" parent="UIParent" enableMouse="true">
+        <Size>
+            <AbsDimension x="610" y="450"/>
+        </Size>
+        <Layers>
+            <Layer>
+                <FontString name="$parent_Title" inherits="GameFontHighlight">
+                    <Anchors>
+                        <Anchor point="TOP">
+                            <Offset>
+                                <AbsDimension x="-12" y="8"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                this._text = getglobal(this:GetName() .. "_Title")
+                RaidHeal.Menu.LoadText(this, "CM_TITLE")
+            </OnLoad>
+            <OnShow>
+                RaidHeal.Menu.ShowText(this)
+            </OnShow>
+            <OnDragStart>
+                this:StartMoving()
+            </OnDragStart>
+            <OnDragStop>
+                this:StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+        <Frames>
+            <ScrollFrame name="$parent_OptionTree">
+                <Size>
+                    <AbsDimension x="190" y="400"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="35"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <ScrollChild>
+                    <Frame name="$parent_ScrollChild">
+                        <Size>
+                            <AbsDimension x="160" y="400"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT">
+                                <Offset>
+                                    <AbsDimension x="15" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Frames>
+                            <!--<Frame name="$parent_General" inherits="RH_ConfigMenu_TreeChildTemplate" enableMouse="true" id="1">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT"/>
+                                    <Anchor point="TOPRIGHT"/>
+                                </Anchors>
+                                <Scripts>
+                                    <OnShow>
+                                        this.Text:SetText(RaidHeal.IO.Format("CM_TREE_GENERAL_DESC"))
+                                    </OnShow>
+                                </Scripts>
+                            </Frame>-->
+                            <Frame name="$parent_Grid" inherits="RH_ConfigMenu_TreeNodeTemplate" id="2">
+                                <Anchors>
+                                    <!--<Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_General"/>
+                                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_General"/>-->
+                                    <Anchor point="TOPLEFT"/>
+                                    <Anchor point="TOPRIGHT"/>
+                                </Anchors>
+                                <Scripts>
+                                    <OnShow>
+                                        this:UpdateExpanded()
+                                        this.Text:SetText(RaidHeal.IO.Format("CM_TREE_GRID_DESC"))
+                                    </OnShow>
+                                </Scripts>
+                                <Frames>
+                                    <Frame name="$parent_General" inherits="RH_ConfigMenu_TreeChildTemplate" id="1">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT"  relativePoint="TOPRIGHT" relativeTo="$parent_Catch"/>
+                                            <Anchor point="TOPRIGHT">
+                                                <Offset>
+                                                    <AbsDimension x="0" y="25"/>
+                                                </Offset>
+                                            </Anchor>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_GENERAL_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("CatGeneral", "Grid")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_HealthBar" inherits="RH_ConfigMenu_TreeChildTemplate" id="2">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_General"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_General"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_HEALTHBAR_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Bar", "Grid", "HealthBar", "HP")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_ManaBar" inherits="RH_ConfigMenu_TreeChildTemplate" id="3">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_HealthBar"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_HealthBar"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_MANABAR_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Bar", "Grid", "ManaBar", "MP")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_SkillBar" inherits="RH_ConfigMenu_TreeChildTemplate" id="4">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ManaBar"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_ManaBar"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_SKILLBAR_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Bar", "Grid", "SkillBar", "SP")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_HealthDisplay" inherits="RH_ConfigMenu_TreeChildTemplate" id="5">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_SkillBar"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_SkillBar"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_HEALTHDISPLAY_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Text", "Grid", "HealthDisplay", "Health")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_NameDisplay" inherits="RH_ConfigMenu_TreeChildTemplate" id="6">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_HealthDisplay"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_HealthDisplay"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_NAMEDISPLAY_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Text", "Grid", "NameDisplay", "Name")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_Buffs" inherits="RH_ConfigMenu_TreeNodeTemplate" id="7">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_NameDisplay"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_NameDisplay"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this:UpdateExpanded()
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_BUFFS_DESC"))
+
+                                                local numChilds = RaidHeal.Menu.GetValue("RaidHeal.Config.Grid.Unit.Buffs.Count") or 0
+                                                while (numChilds or 0) > (this.children or 0) do
+                                                    RaidHeal.Menu.ConfigMenu.CreateChild(this, "CM_TREE_BUFFNO_DESC", "Grid", "Buffs")
+                                                end
+                                            </OnShow>
+                                        </Scripts>
+                                        <Frames>
+                                            <Frame name="$parent_Add" inherits="RH_ConfigMenu_TreeChildTemplate" id="1">
+                                                <Anchors>
+                                                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Catch"/>
+                                                    <Anchor point="BOTTOMRIGHT"/>
+                                                </Anchors>
+                                                <Scripts>
+                                                    <OnShow>
+                                                        this.Text:SetText(RaidHeal.IO.Format("CM_TREE_ADD"))
+                                                    </OnShow>
+                                                    <OnClick>
+                                                        --RaidHeal.Menu.ConfigMenu.CreateChild(this:GetParent(), "CM_TREE_BUFFNO_DESC", "Grid", "Buffs")
+                                                        RaidHeal.Menu.ConfigMenu.OnAddBuffButtonClick(this:GetParent(), "Grid", "Buffs", "Default")
+                                                    </OnClick>
+                                                </Scripts>
+                                            </Frame>
+                                        </Frames>
+                                    </Frame>
+                                    <Frame name="$parent_Debuffs" inherits="RH_ConfigMenu_TreeNodeTemplate" id="8">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Buffs"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Buffs"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this:UpdateExpanded()
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_DEBUFFS_DESC"))
+
+                                                local numChilds = RaidHeal.Menu.GetValue("RaidHeal.Config.Grid.Unit.Debuffs.Count") or 0
+                                                while (numChilds or 0) > (this.children or 0) do
+                                                    RaidHeal.Menu.ConfigMenu.CreateChild(this, "CM_TREE_DEBUFFNO_DESC", "Grid", "Debuffs")
+                                                end
+                                            </OnShow>
+                                        </Scripts>
+                                        <Frames>
+                                            <Frame name="$parent_Add" inherits="RH_ConfigMenu_TreeChildTemplate" id="1">
+                                                <Anchors>
+                                                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Catch"/>
+                                                    <Anchor point="BOTTOMRIGHT"/>
+                                                </Anchors>
+                                                <Scripts>
+                                                    <OnShow>
+                                                        this.Text:SetText(RaidHeal.IO.Format("CM_TREE_ADD"))
+                                                    </OnShow>
+                                                    <OnClick>
+                                                        --RaidHeal.Menu.ConfigMenu.CreateChild(this:GetParent(), "CM_TREE_DEBUFFNO_DESC", "Grid", "Debuffs")
+                                                        RaidHeal.Menu.ConfigMenu.OnAddBuffButtonClick(this:GetParent(), "Grid", "Debuffs", "Default")
+                                                    </OnClick>
+                                                </Scripts>
+                                            </Frame>
+                                        </Frames>
+                                    </Frame>
+                                </Frames>
+                            </Frame>
+                            <Frame name="$parent_Focus" inherits="RH_ConfigMenu_TreeNodeTemplate" id="3">
+                                <Anchors>
+                                    <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Grid"/>
+                                </Anchors>
+                                <Scripts>
+                                    <OnShow>
+                                        this:UpdateExpanded()
+                                        this.Text:SetText(RaidHeal.IO.Format("CM_TREE_FOCUS_DESC"))
+                                    </OnShow>
+                                </Scripts>
+                                <Frames>
+                                    <Frame name="$parent_General" inherits="RH_ConfigMenu_TreeChildTemplate" id="1">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT"  relativePoint="TOPRIGHT" relativeTo="$parent_Catch"/>
+                                            <Anchor point="TOPRIGHT">
+                                                <Offset>
+                                                    <AbsDimension x="0" y="25"/>
+                                                </Offset>
+                                            </Anchor>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_GENERAL_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("CatGeneral", "Focus")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_HealthBar" inherits="RH_ConfigMenu_TreeChildTemplate" id="2">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_General"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_General"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_HEALTHBAR_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Bar", "Focus", "HealthBar", "HP")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_ManaBar" inherits="RH_ConfigMenu_TreeChildTemplate" id="3">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_HealthBar"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_HealthBar"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_MANABAR_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Bar", "Focus", "ManaBar", "MP")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_SkillBar" inherits="RH_ConfigMenu_TreeChildTemplate" id="4">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ManaBar"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_ManaBar"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_SKILLBAR_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Bar", "Focus", "SkillBar", "SP")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_HealthDisplay" inherits="RH_ConfigMenu_TreeChildTemplate" id="5">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_SkillBar"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_SkillBar"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_HEALTHDISPLAY_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Text", "Focus", "HealthDisplay", "Health")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_NameDisplay" inherits="RH_ConfigMenu_TreeChildTemplate" id="6">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_HealthDisplay"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_HealthDisplay"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_NAMEDISPLAY_DESC"))
+                                            </OnShow>
+                                            <OnClick>
+                                                RaidHeal.Menu.ConfigMenu.LoadPage("Text", "Focus", "NameDisplay", "Name")
+                                                RaidHeal.Menu.ConfigMenu.SelectChild(this)
+                                            </OnClick>
+                                        </Scripts>
+                                    </Frame>
+                                    <Frame name="$parent_Buffs" inherits="RH_ConfigMenu_TreeNodeTemplate" id="7">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_NameDisplay"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_NameDisplay"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this:UpdateExpanded()
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_BUFFS_DESC"))
+
+                                                local numChilds = RaidHeal.Config.Focus and RaidHeal.Config.Focus.Unit and RaidHeal.Config.Focus.Unit.Buffs and RaidHeal.Config.Focus.Unit.Buffs.Count or 0
+                                                while numChilds > (this.children or 0) do
+                                                    RaidHeal.Menu.ConfigMenu.CreateChild(this, "CM_TREE_BUFFNO_DESC", "Focus", "Buffs")
+                                                end
+                                            </OnShow>
+                                        </Scripts>
+                                        <Frames>
+                                            <Frame name="$parent_Add" inherits="RH_ConfigMenu_TreeChildTemplate" id="1">
+                                                <Anchors>
+                                                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Catch"/>
+                                                    <Anchor point="BOTTOMRIGHT"/>
+                                                </Anchors>
+                                                <Scripts>
+                                                    <OnShow>
+                                                        this.Text:SetText(RaidHeal.IO.Format("CM_TREE_ADD"))
+                                                    </OnShow>
+                                                    <OnClick>
+                                                        --RaidHeal.Menu.ConfigMenu.CreateChild(this, "CM_TREE_BUFFNO_DESC", "Focus", "Buffs")
+                                                        RaidHeal.Menu.ConfigMenu.OnAddBuffButtonClick(this:GetParent(), "Focus", "Buffs", "Default")
+                                                    </OnClick>
+                                                </Scripts>
+                                            </Frame>
+                                        </Frames>
+                                    </Frame>
+                                    <Frame name="$parent_Debuffs" inherits="RH_ConfigMenu_TreeNodeTemplate" id="8">
+                                        <Anchors>
+                                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Buffs"/>
+                                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Buffs"/>
+                                        </Anchors>
+                                        <Scripts>
+                                            <OnShow>
+                                                this:UpdateExpanded()
+                                                this.Text:SetText(RaidHeal.IO.Format("CM_TREE_DEBUFFS_DESC"))
+
+                                                local numChilds = RaidHeal.Config.Focus and RaidHeal.Config.Focus.Unit and RaidHeal.Config.Focus.Unit.Debuffs and RaidHeal.Config.Focus.Unit.Debuffs.Count or 0
+                                                while numChilds > (this.children or 0) do
+                                                    RaidHeal.Menu.ConfigMenu.CreateChild(this, "CM_TREE_DEBUFFNO_DESC", "Focus", "Debuffs")
+                                                end
+                                            </OnShow>
+                                        </Scripts>
+                                        <Frames>
+                                            <Frame name="$parent_Add" inherits="RH_ConfigMenu_TreeChildTemplate" id="1">
+                                                <Anchors>
+                                                    <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Catch"/>
+                                                    <Anchor point="BOTTOMRIGHT"/>
+                                                </Anchors>
+                                                <Scripts>
+                                                    <OnShow>
+                                                        this.Text:SetText(RaidHeal.IO.Format("CM_TREE_ADD"))
+                                                    </OnShow>
+                                                    <OnClick>
+                                                        --RaidHeal.Menu.ConfigMenu.CreateChild(this, "CM_TREE_DEBUFFNO_DESC", "Focus", "Debuffs")
+                                                        RaidHeal.Menu.ConfigMenu.OnAddBuffButtonClick(this:GetParent(), "Focus", "Debuffs", "Default")
+                                                    </OnClick>
+                                                </Scripts>
+                                            </Frame>
+                                        </Frames>
+                                    </Frame>
+                                </Frames>
+                            </Frame>
+                        </Frames>
+                        <Scripts>
+                            <OnLoad>
+                                if not this.nodes then this.nodes = {} end
+                                this.ScrollParent = RH_ConfigMenu_OptionTree
+                                this.ScrollParent.ScrollChild = this
+
+                                this.UpdateExpanded = function(self)
+                                    local height = 0
+
+                                    for id, child in pairs(self.nodes) do
+                                        if child.CalcHeight then
+                                            height = height + child:CalcHeight()
+                                        else
+                                            height = height + child:GetHeight()
+                                        end
+                                    end
+
+                                    --self:SetHeight(height)
+
+                                    if height > self.ScrollParent:GetHeight() then
+                                        self.ScrollParent.Slider:Show()
+                                        self.ScrollParent.Slider:SetMinMaxValues(0, height - self.ScrollParent:GetHeight())
+                                    else
+                                        self.ScrollParent.Slider:Hide()
+                                        self.ScrollParent.Slider:SetMinMaxValues(0, 0)
+                                    end
+                                end
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </ScrollChild>
+                <Scripts>
+                    <OnShow>
+                        this:UpdateScrollChildRect()
+
+
+                        if this.ScrollChild then
+                            this.ScrollChild:Hide()
+                            this.ScrollChild:Show()
+                        end
+                    </OnShow>
+                </Scripts>
+            </ScrollFrame>
+            <Slider name="$parent_Slider" inherits="UIPanelScrollBarHaveBackdropTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeTo="$parent_OptionTree">
+                        <Offset>
+                            <AbsDimension x="0" y="20"/>
+                        </Offset>
+                    </Anchor>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parent_OptionTree">
+                        <Offset>
+                            <AbsDimension x="0" y="-20"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnValueChanged>
+                        local scrollValue = this:GetValue()
+                        local parent = RH_ConfigMenu_OptionTree
+
+                        --local scrollTop = RH_ConfigMenu_OptionTree_ScrollChild_General
+                        --scrollTop:ClearAllAnchors()
+                        --scrollTop:SetAnchor("TOPRIGHT", "TOPRIGHT", parent.ScrollChild, 0, -scrollValue)
+                        parent:SetVerticalScroll(scrollValue)
+
+                        parent:UpdateScrollChildRect()
+
+                        RaidHeal.Menu.ConfigMenu.UpdateChildrenOffset(-scrollValue)
+                    </OnValueChanged>
+                    <OnLoad>
+                        RH_ConfigMenu_OptionTree.Slider = this
+                    </OnLoad>
+                </Scripts>
+            </Slider>
+            <Frame name="$parent_PageBar" inherits="RH_ConfigMenu_PageTemplate" hidden="true">
+                <Frames>
+                    <Frame name="$parent_Active" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT">
+                                <Offset>
+                                    <AbsDimension x="10" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_ACTIVE")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Bar.Active", RaidHeal.Menu.ConfigMenu.Pages.Bar.Update)
+                                this._bind.Disable = "RaidHeal.Menu.ConfigMenu.Pages.Bar.CanToggle"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Colors" inherits="RH_OptionBaseTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_Active">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Frames>
+                            <Button name="$parent_Button" inherits="UIPanelButtonTemplate">
+                                <Size>
+                                    <AbsDimension x="80" y="20"/>
+                                </Size>
+                                <Anchors>
+                                    <Anchor point="RIGHT"/>
+                                </Anchors>
+                                <Scripts>
+                                    <OnLoad>
+                                        local parent = this:GetParent()
+                                        parent._text = getglobal(parent:GetName() .. "_Text")
+                                        parent._button = this
+
+                                        RaidHeal.Menu.LoadText(this, "CM_COLORIZEBTN_BUTTON")
+                                    </OnLoad>
+                                    <OnShow>
+                                        RaidHeal.Menu.ShowText(this)
+                                    </OnShow>
+                                    <OnClick>
+                                        RaidHeal.Menu.Colorizer.Show(RaidHeal.Menu.ConfigMenu.Pages.Bar.Config)
+                                    </OnClick>
+                                </Scripts>
+                            </Button>
+                        </Frames>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_COLORIZEBTN_TEXT")
+                            </OnLoad>
+                            <OnShow>
+                                RaidHeal.Menu.ShowText(this)
+                            </OnShow>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Dock" inherits="RH_OptionDropDownButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Active">
+                                <Offset>
+                                    <AbsDimension x="0" y="20"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BAR_DOCK")
+                                RaidHeal.Menu.LoadDropDownList(this, "Dock4")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Bar.Dock", RaidHeal.Menu.ConfigMenu.Pages.Bar.Update)
+                                this._bind.Disable = "RaidHeal.Menu.ConfigMenu.Pages.Bar.CanToggle"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_BarAlign" inherits="RH_OptionDropDownButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_Dock">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BAR_BARALIGN")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Bar.Config.BarAlign", RaidHeal.Menu.ConfigMenu.Pages.Bar.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Thickness" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Dock">
+                                <Offset>
+                                    <AbsDimension x="0" y="20"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BAR_THICKNESS")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Bar.Thickness", RaidHeal.Menu.ConfigMenu.Pages.Bar.Update)
+                                this._bind.Disable = "RaidHeal.Menu.ConfigMenu.Pages.Bar.CanToggle"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Padding" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_Thickness">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BAR_PADDING")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Bar.Config.Padding", RaidHeal.Menu.ConfigMenu.Pages.Bar.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+            </Frame>
+            <Frame name="$parent_PageText" inherits="RH_ConfigMenu_PageTemplate" hidden="true">
+                <Frames>
+                    <Frame name="$parent_Active" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT">
+                                <Offset>
+                                    <AbsDimension x="10" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_ACTIVE")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Text.Active", RaidHeal.Menu.ConfigMenu.Pages.Text.Update)
+                                this._bind.Disable = "RaidHeal.Menu.ConfigMenu.Pages.Text.CanToggle"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Colors" inherits="RH_OptionBaseTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_Active">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Frames>
+                            <Button name="$parent_Button" inherits="UIPanelButtonTemplate">
+                                <Size>
+                                    <AbsDimension x="80" y="20"/>
+                                </Size>
+                                <Anchors>
+                                    <Anchor point="RIGHT"/>
+                                </Anchors>
+                                <Scripts>
+                                    <OnLoad>
+                                        local parent = this:GetParent()
+                                        parent._text = getglobal(parent:GetName() .. "_Text")
+                                        parent._button = this
+
+                                        RaidHeal.Menu.LoadText(this, "CM_COLORIZEBTN_BUTTON")
+                                    </OnLoad>
+                                    <OnShow>
+                                        RaidHeal.Menu.ShowText(this)
+                                    </OnShow>
+                                    <OnClick>
+                                        RaidHeal.Menu.Colorizer.Show(RaidHeal.Menu.ConfigMenu.Pages.Text.Config)
+                                    </OnClick>
+                                </Scripts>
+                            </Button>
+                        </Frames>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_COLORIZEBTN_TEXT")
+                            </OnLoad>
+                            <OnShow>
+                                RaidHeal.Menu.ShowText(this)
+                            </OnShow>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Anchor" inherits="RH_OptionDropDownButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT">
+                                <Offset>
+                                    <AbsDimension x="-10" y="-170"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BUFF_ANCHOR")
+                                RaidHeal.Menu.LoadDropDownList(this, "Anchors9")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Text.Anchor", RaidHeal.Menu.ConfigMenu.Pages.Text.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_OffsetX" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Anchor">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BUFF_OFFSETX")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Text.OffsetX", RaidHeal.Menu.ConfigMenu.Pages.Text.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_OffsetY" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_OffsetX">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BUFF_OFFSETY")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Text.OffsetY", RaidHeal.Menu.ConfigMenu.Pages.Text.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+            </Frame>
+            <Frame name="$parent_PageCategoryGeneral" inherits="RH_ConfigMenu_PageTemplate" hidden="true">
+                <Frames>
+                    <Frame name="$parent_Active" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT">
+                                <Offset>
+                                    <AbsDimension x="10" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_ACTIVE")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.Active", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_SoloMode" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Active">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_SOLOMODE")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.SoloMode", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_DummyMode" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_Active">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_DUMMYMODE")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.DummyMode")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_MaxNumUnits" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_SoloMode">
+                                <Offset>
+                                    <AbsDimension x="0" y="20"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_MAXNUMUNITS")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.MaxNumUnits", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_UnitsPerGroup" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_MaxNumUnits">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_UNITSPERGROUP")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.UnitsPerGroup", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_GroupAlign" inherits="RH_OptionDropDownButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_MaxNumUnits">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_GROUPALIGN")
+                                RaidHeal.Menu.LoadDropDownList(this, "AnchorSides4")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.GroupAlign", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_UnitAlign" inherits="RH_OptionDropDownButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_GroupAlign">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_UNITALIGN")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.UnitAlign", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_SpacingHorizontal" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_GroupAlign">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_SPACINGHORIZ")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.Spacing.Horizontal", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_SpacingVertical" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_SpacingHorizontal">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_SPACINGVERT")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.Spacing.Vertical", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_DCAlpha" inherits="RH_OptionEditBoxTemplate" hidden="true">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_SpacingHorizontal">
+                                <Offset>
+                                    <AbsDimension x="0" y="20"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_DCALPHA")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.DCAlpha", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                                this._bind.DisableIfNot = "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.IsGrid"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_HighlightAggro" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_DCAlpha">
+                                <Offset>
+                                    <AbsDimension x="0" y="20"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_AGGRO")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.HighlightAggro", RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Update)
+                                this._bind.DisableIfNot = "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.IsGrid"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_ShowFakeMove" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_HighlightAggro">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_FAKEMOVE")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.ShowFakeMove")
+                                this._bind.DisableIfNot = "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.IsGrid"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_WardenPet" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_HighlightAggro">
+                                <Offset>
+                                    <AbsDimension x="0" y="20"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_WARDENPET")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.ShowWardenPet")
+                                this._bind.DisableIfNot = "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.IsGrid"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_PriestPet" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_WardenPet">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_PRIESTPET")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.ShowPriestPet")
+                                this._bind.DisableIfNot = "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.IsGrid"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_OwnPet" inherits="RH_OptionCheckButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent_WardenPet">
+                                <Offset>
+                                    <AbsDimension x="20" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_CATGEN_OWNPET")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Config.ShowOwnPet")
+                                this._bind.DisableIfNot = "RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.IsGrid"
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Button name="$parent_ResizeMove" inherits="UIPanelButtonTemplate">
+                        <Size>
+                            <AbsDimension x="80" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT">
+                                <Offset>
+                                    <AbsDimension x="10" y="-10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnShow>
+                                this:SetText(RaidHeal.IO.Format("CM_RESIZEMOVE_DESC"))
+                            </OnShow>
+                            <OnClick>
+                                RaidHeal.Menu.ResizeGridFrame.Show(RaidHeal.Menu.ConfigMenu.Pages.CatGeneral.Category, RH_ConfigMenu)
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                </Frames>
+            </Frame>
+            <Frame name="$parent_PageBuff" inherits="RH_ConfigMenu_PageTemplate" hidden="true">
+                <Frames>
+                    <Button name="$parent_RemoveButton" inherits="UIPanelButtonTemplate">
+                        <Size>
+                            <AbsDimension x="80" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT">
+                                <Offset>
+                                    <AbsDimension x="10" y="-10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                this:SetText(RaidHeal.IO.Format("CM_PAGE_BUFF_REMOVEBUTTON_DESC"))
+                            </OnLoad>
+                            <OnClick>
+                                RaidHeal.Menu.ConfigMenu.OnRemoveBuffButtonClick()
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Button name="$parent_FilterButton" inherits="UIPanelButtonTemplate">
+                        <Size>
+                            <AbsDimension x="80" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_RemoveButton">
+                                <Offset>
+                                    <AbsDimension x="10" y="0"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnShow>
+                                this:SetText(RaidHeal.IO.Format("CM_PAGE_BUFF_FILTERBUTTON_DESC"))
+                            </OnShow>
+                            <OnClick>
+                                --RaidHeal.Menu.FilterMenu.Show(RaidHeal.Menu.ConfigMenu.Pages.Buff.Category, RaidHeal.Menu.ConfigMenu.Pages.Buff.Type, RaidHeal.Menu.ConfigMenu.Pages.Buff.Index, RH_ConfigMenu)
+                                RaidHeal.Menu.FilterMenu.Show(RH_ConfigMenu, RaidHeal.Menu.ConfigMenu.Pages.Buff.Type, RaidHeal.Menu.ConfigMenu.Pages.Buff.Config)
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+
+                    <Frame name="$parent_Anchor" inherits="RH_OptionDropDownButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="BOTTOMRIGHT">
+                                <Offset>
+                                    <AbsDimension x="-10" y="-170"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BUFF_ANCHOR")
+
+                                RaidHeal.Menu.LoadDropDownList(this, "Anchors9")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Buff.Anchor", RaidHeal.Menu.ConfigMenu.Pages.Buff.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_OffsetX" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Anchor">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BUFF_OFFSETX")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Buff.OffsetX", RaidHeal.Menu.ConfigMenu.Pages.Buff.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_OffsetY" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_OffsetX">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BUFF_OFFSETY")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Buff.OffsetY", RaidHeal.Menu.ConfigMenu.Pages.Buff.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Width" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_OffsetY">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BUFF_WIDTH")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Buff.Width", RaidHeal.Menu.ConfigMenu.Pages.Buff.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Height" inherits="RH_OptionEditBoxTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Width">
+                                <Offset>
+                                    <AbsDimension x="0" y="10"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "CM_PAGE_BUFF_HEIGHT")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.ConfigMenu.Pages.Buff.Height", RaidHeal.Menu.ConfigMenu.Pages.Buff.Update)
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+            </Frame>
+
+            <Frame name="$parent_Preview" inherits="RH_TooltipBackdrop" enableMouse="true" hidden="true" frameLevel="1">
+                <Size>
+                    <AbsDimension x="200" y="150"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="200" y="-55"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Frames>
+                    <Frame name="$parent_UnitFrame">
+                        <Size>
+                            <AbsDimension x="150" y="80"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="CENTER"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="ARTWORK">
+                                <Texture file="interface/addons/raidheal/graphics/rect.tga">
+                                    <Anchors>
+                                        <Anchor point="TOPLEFT"/>
+                                        <Anchor point="BOTTOMRIGHT"/>
+                                    </Anchors>
+                                    <Color r="0.4" g="0.4" b="0.7"/>
+                                </Texture>
+                            </Layer>
+                        </Layers>
+                        <Frames>
+                            <Frame name="$parent_Elem" enableMouse="true">
+                                <Size>
+                                    <AbsDimension x="40" y="40"/>
+                                </Size>
+                                <Anchors>
+                                    <Anchor point="CENTER"/>
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="ARTWORK">
+                                        <Texture file="interface/addons/raidheal/graphics/rect.tga">
+                                            <Anchors>
+                                                <Anchor point="TOPLEFT"/>
+                                                <Anchor point="BOTTOMRIGHT"/>
+                                            </Anchors>
+                                            <Color r="1" g="1" b="0.4"/>
+                                        </Texture>
+                                    </Layer>
+                                </Layers>
+                                <Scripts>
+                                    <OnMouseDown>
+                                        if key == "LBUTTON" and this.CanMove then
+                                            this:StartMoving()
+                                            this.IsMoving = true
+                                        end
+                                    </OnMouseDown>
+                                    <OnMouseUp>
+                                        if this.IsMoving then
+                                            this:StopMovingOrSizing()
+                                            this.IsMoving = false
+                                        end
+                                    </OnMouseUp>
+                                    <OnUpdate>
+                                        if this.IsMoving then
+                                            RaidHeal.Menu.ConfigMenu.CheckPreview()
+                                        end
+                                    </OnUpdate>
+                                </Scripts>
+                            </Frame>
+                        </Frames>
+                    </Frame>
+                </Frames>
+            </Frame>
+        </Frames>
+    </Frame>
+</Ui>

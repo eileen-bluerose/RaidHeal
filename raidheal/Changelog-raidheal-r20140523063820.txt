@@ -1,0 +1,42 @@
+Mithrandir:
+	- ADDED: Dropdown menu for Minimapbutton (or Addon Manager Button)
+	- ADDED: Dropdown menu for Minimapbutton (or Addon Manager Button)
+	- BUGFIX: hotkeys should now be changed properly after switching classes (hotkeys.lua) BUGFIX: warlock and champion class names should now be localized in the skillmenu (skillmenu.lua) BUGFIX: SkillMenu will now properly update after switching classes (skillmenu.lua) BUGFIX; Scrolling should now work as expected in ActionMenu (menu/actionmenu.xml)
+	- BUGFIX: Buff Icons were hidden due to unspecified FrameLevel (config/presets.lua) LOCA FIX: Added localized descriptions on Skill Menu LOCA FIX: Fixed some typos BUGFIX: Fixed Anchoring of RH_ActionMenu_SelectActionPanel_SelectSkill in menu/actionmenu.xml BUGFIX: Fixed ConfigMenu sometimes not loading or saving properly (menu/configmenu.lua) ADDED: Dummymode option in menu/configmenu.xml BUGFIX: Fixed Filtermenu not saving correctly BUGFIX: now a change in position or size of a BackFrame is properly updated (menu/resizegridframe.lua) BUGFIX: SkillMenu can now be moved (menu/skillmenu.xml) BUGFIX: Fixed buff sorting not working (ui/data.lua) BUGFIX: Frames.Arrange couldn't handle nested Elements correctly (frames.lua) ADDED: a it more advanced logging (log.lua). modified most places to reflect this addition. BUGFIX: Restored AddonManager support (main.lua)
+	- NEW: SkillMenu NEW: ConfigMenu REWORKED: Data Structure ADDED: Focus support ADDED: Aggro Highlight
+	- BUGFIX: Error in grid/ui.lua: IO not found
+	- BUGFIX: Fixed an error that caused stuttering updates under certain conditions BUGFIX: Stack Count wouldn't be displayed for (De-)Buffs
+	- BUGFIX: Fixed an error that caused stuttering updates under certain conditions BUGFIX: Stack Count wouldn't be displayed for (De-)Buffs
+	- BUGFIX: slider is a nil value
+	- BUGFIX: RaidHeal.Grid.RestoreTarget would erae other Focus targets BUGFIX: Added testing for nil on various places NEW: Added FilterMenu NEW: Readded options for unit spacing NEW: Readded options for pets UPDATE: Made RaidHeal.Menu a bit more flexible NEW: Added more debugging tools
+	- UPDATE: Worked on the buff positioning menu
+	- UPDATE: Worked on the buff positioning menu
+	- UPDATE: Worked on the buff positioning menu
+	- BUGFIX: RaidHeal.Grid.Actions.Execute: advanced targeting caused problems, deactivated this functionality (temporary) UPDATE: english loca should be up-to-date
+	- BUGFIX: RaidHeal.Grid.Actions.GetActionData: automatic revive should trigger as intended
+	- BUGFIX: RaidHeal.Grid.FormatHealthFuncs.Simplified: check for param maxHealth always triggered
+	- Fixed wrong version
+	- Fixed some Bugs, added functionality to config menu NEW: RaidHeal.Frames.Update: support for multiple anchors on one element EXPERIMENTAL: RaidHeal.Grid.Actions.Execute: hooking TargetHateListRequest (fix for aggrometer) BUGFIX: RaidHeal.Grid.Actions.Execute: No Focusframe shown when actionData.Type == "ACTION" BUGFIX: RaidHeal.Grid.FormatHealthFuncs.Simplified: Added checks for nil NEW: RaidHeal.Grid.UI: Added support for configmenu buff preview BUGFIX: RaidHeal.Grid.UI.UpdateUnit: added checks if buffs are created
+	- Fixed 2 Bugs: RaidHeal.Grid.UI.Arrange: used :GetScale() instead of :GetRealScale() RaidHeal.Menu.ResizeGridFrame: added missing scale arithmetic
+	- Reworked most parts
+	- Bugfix: Debuff Stack Count not displayed correctly Bugfix: ConfigMenu option for maximum number of shown groups not doing anything Bugfix: SkillDetailFrame option IsCast now working Bugfix: not loading Hotkeys with shift correctly
+	- Added Skill targeting function Bugfix: Error while loading setskill icon while loading actions Bugfix: DebugHelper.Inspect not found
+	- Added ActionMenu.DetailFrame Added ActionMenu.TargetDetailFrame
+	- Code Cleanup of ActionMenu Bugfix: Ctrl/Alt/Shift wouldn't be displayed correctly after relogging / reloading Added ActionBar Slot functionality Some performance improvements (Doesn't check debuffs on every UNIT_BUFF_CHANGED event anymore; no calls to Grid.UpdateParty() while in solo-mode/addon inactive)
+	- Bugfix: ActionMenu.InitListItem crashed if given an setskill
+	- Bugfix: Removed Debug Commands (would crash on other clients)
+	- Added Setskill DB Finished Setskill support Bugfix: Action Target not working
+	- Added preliminary support for Setskills WARNING: Use at your own risk
+	- BugFix: OptionEditBoxTemplate not working as intended
+	- Added Description to RH_ResizeFrame
+	- Loca: Finished en-Locale
+	Signed-off-by: Mithrandir <hoffmale@hotmail.de>
+	- Bugfix: Wouldn't revive if revive skill selected Bugfix: Problem with Debuffs with no Duration while storinge them in Debuffs.DB
+	Signed-off-by: Mithrandir <hoffmale@hotmail.de>
+	- Bugfixes for FilterFrame Updated Loca
+	Signed-off-by: Mithrandir <hoffmale@hotmail.de>
+	- Bugfix for last fix Some small Loca fixes
+	Signed-off-by: Mithrandir <hoffmale@hotmail.de>
+	- Bugfix
+	Signed-off-by: Mithrandir <hoffmale@hotmail.de>
+	- Initial commit

@@ -1,0 +1,39 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/UI.xsd">
+    <Frame name="RH_MiniMapDropDownMenu" inherits="UIDropDownMenuTemplate">
+        <Scripts>
+            <OnLoad>
+                local function _initMenu()
+                    local lut = {
+                        {
+                            Display = "CM_TITLE_DESC",
+                            OnClick = function() RaidHeal.Menu.ConfigMenu.Show() end
+                        },
+                        {
+                            Display = "SM_TITLETEXT_DESC",
+                            OnClick = function() RaidHeal.Menu.SkillMenu.Show() end
+                        }
+                    }
+
+                    for i = 1, #lut do
+                        local item = lut[i]
+                        if item then
+                            local info = {}
+                            info.text = RaidHeal.IO.Format(item.Display)
+                            info.func = item.OnClick
+
+                            UIDropDownMenu_AddButton(info)
+                        end
+                    end
+                end
+
+                UIDropDownMenu_Initialize(this, _initMenu, "MENU")
+            </OnLoad>
+            <OnShow>
+                if this.relTo then
+                    this:ClearAllAnchors()
+                    this:SetAnchor("TOPLEFT", "CENTER", this.relTo, 0, 0)
+                end
+            </OnShow>
+        </Scripts>
+    </Frame>
+</Ui>

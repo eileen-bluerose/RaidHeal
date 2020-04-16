@@ -1,0 +1,101 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.runewaker.com/UI.xsd">
+    <Button name="RH_ResizeGridFrame_MoveArrowBtnTemplate" virtual="true">
+        <Size>
+            <AbsDimension x="14" y="14"/>
+        </Size>
+        <Scripts>
+            <OnDragStart>
+                RaidHeal.Menu.ResizeGridFrame.StartSizing(this:GetAnchor())
+            </OnDragStart>
+            <OnDragStop>
+                this:GetParent():StopMovingOrSizing()
+            </OnDragStop>
+        </Scripts>
+    </Button>
+
+    <Frame name="RH_ResizeGridFrame" enableMouse="true" parent="UIParent" hidden="true" movable="true" resizable="true">
+        <Size>
+            <AbsDimension x="100" y="100"/>
+        </Size>
+        <Backdrop bgFile="Interface/Tooltips/Tooltip-background" tile="true">
+            <TileSize>
+                <AbsValue val="16"/>
+            </TileSize>
+        </Backdrop>
+        <Layers>
+            <Layer>
+                <FontString name="$parent_Text" inherits="GameFontHighlight" justifyH="LEFT">
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                    <Size>
+                        <AbsDimension x="300" y="100"/>
+                    </Size>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parent_ArrowTopLeft" inherits="RH_ResizeGridFrame_MoveArrowBtnTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                </Anchors>
+                <NormalTexture file="interface\WorldMap\WorldMap-TitlebarSwitch-Normal">
+                    <TexCoords left="0" right="1" top="0" bottom="1"/>
+                </NormalTexture>
+                <PushedTexture file="interface\WorldMap\WorldMap-TitlebarSwitch-Depress">
+                    <TexCoords left="0" right="1" top="0" bottom="1"/>
+                </PushedTexture>
+            </Button>
+            <Button name="$parent_ArrowTopRight" inherits="RH_ResizeGridFrame_MoveArrowBtnTemplate">
+                <Anchors>
+                    <Anchor point="TOPRIGHT"/>
+                </Anchors>
+                <NormalTexture file="interface\WorldMap\WorldMap-TitlebarSwitch-Normal">
+                    <TexCoords left="1" right="0" top="0" bottom="1"/>
+                </NormalTexture>
+                <PushedTexture file="interface\WorldMap\WorldMap-TitlebarSwitch-Depress">
+                    <TexCoords left="1" right="0" top="0" bottom="1"/>
+                </PushedTexture>
+            </Button>
+            <Button name="$parent_ArrowBottomLeft" inherits="RH_ResizeGridFrame_MoveArrowBtnTemplate">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT"/>
+                </Anchors>
+                <NormalTexture file="interface\WorldMap\WorldMap-TitlebarSwitch-Normal">
+                    <TexCoords left="0" right="1" top="1" bottom="0"/>
+                </NormalTexture>
+                <PushedTexture file="interface\WorldMap\WorldMap-TitlebarSwitch-Depress">
+                    <TexCoords left="0" right="1" top="1" bottom="0"/>
+                </PushedTexture>
+            </Button>
+            <Button name="$parent_ArrowBottomRight" inherits="RH_ResizeGridFrame_MoveArrowBtnTemplate">
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT"/>
+                </Anchors>
+                <NormalTexture file="interface\WorldMap\WorldMap-TitlebarSwitch-Normal">
+                    <TexCoords left="1" right="0" top="1" bottom="0"/>
+                </NormalTexture>
+                <PushedTexture file="interface\WorldMap\WorldMap-TitlebarSwitch-Depress">
+                    <TexCoords left="1" right="0" top="1" bottom="0"/>
+                </PushedTexture>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnDoubleClick>
+                RaidHeal.Menu.ResizeGridFrame.Save()
+                RaidHeal.Menu.ResizeGridFrame.Hide()
+            </OnDoubleClick>
+            <OnMouseDown>
+                this:StartMoving()
+            </OnMouseDown>
+            <OnMouseUp>
+                this:StopMovingOrSizing()
+            </OnMouseUp>
+            <OnShow>
+                local text = RaidHeal.IO.Format("CM_RESIZE_DESC")
+                getglobal(this:GetName() .. "_Text"):SetText(text)
+            </OnShow>
+        </Scripts>
+    </Frame>
+</Ui>

@@ -1,0 +1,68 @@
+##################################################
+##               Addon: RaidHeal                ##
+##                                              ##
+## Author: hoffmale                             ##
+## Warning: DO NOT CHANGE THIS FILE! IT MIGHT   ##
+##          CAUSE IRREPARABLE DAMAGE TO YOUR    ##
+##          CURRENT RAIDHEAL INSTALLATION!      ##
+##################################################
+
+# setup basic addon structure
+stub.lua
+log.lua
+
+# load debug features (remove for release version)
+#debug/debug.lua
+
+# load basic framework
+io.lua
+events.lua
+locale.lua
+presets.lua
+profiles.lua
+frames.lua
+
+# load hotkey stuff
+hotkeys.lua
+
+# load ui
+ui/ui.lua
+ui/data.lua
+ui/grid.lua
+ui/focus.lua
+ui/handlers.lua
+ui/dropdownmenu.xml
+
+# load general stuff
+main.lua
+
+# load required databases
+db/buffs.lua
+
+# load menus
+menu/menu.lua
+menu/templates.xml
+menu/skillmenu.lua
+menu/skillmenu.xml
+
+menu/resizegridframe.lua
+menu/resizegridframe.xml
+
+menu/colorizer.xml
+menu/colorizer.lua
+
+menu/configmenu.lua
+menu/configmenu.xml
+
+menu/filtermenu.lua
+menu/filtermenu.xml
+
+menu/actionmenu.lua
+menu/actionmenu.xml
+
+menu/minimapdropdown.xml
+menu/minimapbutton.xml
+-- X-Curse-Packaged-Version: r20140523063820
+-- X-Curse-Project-Name: RaidHeal
+-- X-Curse-Project-ID: raidheal
+-- X-Curse-Repository-ID: rom/raidheal/mainline

@@ -1,0 +1,32 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/UI.xsd">
+    <Frame name="RH_DropDownMenu" inherits="UIDropDownMenuTemplate">
+        <Scripts>
+            <OnLoad>
+                local function _initMenu()
+                local unit = this._unit
+                local menu = ""
+
+                if UnitIsUnit(unit, "player") then
+                menu = "SELF"
+                elseif UnitIsUnit(unit, "pet") then
+                menu = "PET"
+                elseif UnitIsPlayer(unit) then
+                if UnitInRaid(unit) then
+                menu = "RAID"
+                elseif UnitInParty(unit) then
+                menu = "PARTY"
+                else
+                menu = "PLAYER"
+                end
+                else
+                menu = "NPC"
+                end
+
+                UnitPopop_ShowMenu(this, menu, unit)
+                end
+
+                UIDropDownMenu_Initialize(this, _initMenu, "MENU")
+            </OnLoad>
+        </Scripts>
+    </Frame>
+</Ui>

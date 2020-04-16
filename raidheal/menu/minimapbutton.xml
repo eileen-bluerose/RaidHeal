@@ -1,0 +1,41 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/UI.xsd">
+    <Button name="RH_MiniMapButton" inherits="MinimapButtonTemplate" parent="UIParent">
+        <Size>
+            <AbsDimension x="24" y="24"/>
+        </Size>
+        <Scripts>
+            <OnClick>
+                --if key == "LBUTTON" then
+                --    RH_ConfigMenu:Show()
+                --elseif key == "RBUTTON" then
+                --    RaidHeal.Menu.SkillMenu.Show()
+                --end
+            </OnClick>
+            <OnMouseDown>
+                if key == "RBUTTON" and IsShiftKeyDown() then
+                    this:StartMoving()
+                else
+                    UIDropDownMenu_SetAnchor(RH_MiniMapDropDownMenu, 0, 0, "TOPLEFT", "CENTER", this)
+                    ToggleDropDownMenu(RH_MiniMapDropDownMenu)
+                end
+            </OnMouseDown>
+            <OnMouseUp>
+                this:StopMovingOrSizing()
+                local _, _, _, posX, posY = this:GetAnchor()
+                RaidHeal.Config.MiniMapButton = { Pos = { posX, posY } }
+            </OnMouseUp>
+            <OnShow>
+                local pos = RaidHeal.Config.MiniMapButton and RaidHeal.Config.MiniMapButton.Pos or { WorldFrame:GetWidth() / 2, WorldFrame:GetHeight() / 2 }
+                this:ClearAllAnchors()
+                this:SetAnchor("TOPLEFT", "TOPLEFT", "UIParent", unpack(pos))
+            </OnShow>
+            <OnLoad>
+                this:RegisterForClicks("LeftButton", "RightButton")
+            </OnLoad>
+        </Scripts>
+        <NormalTexture file="Interface/widgeticons/classicon_druid"/>
+        <DisabledTexture file="Interface/widgeticons/classicon_druid"/>
+        <PushedTexture file="Interface/widgeticons/classicon_druid"/>
+        <HighlightTexture file="Interface/widgeticons/classicon_druid"/>
+    </Button>
+</Ui>

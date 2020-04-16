@@ -1,0 +1,380 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/UI.xsd">
+    <Frame name="RH_FilterMenu_CustomListTemplate" inherits="RH_ListTemplate" virtual="true">
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parent_Text" inherits="GameFontHighlight" justifyH="LEFT">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="-25"/>
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT">
+                            <Offset>
+                                <AbsDimension x="0" y="-5"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parent_AddButton" inherits="UIPanelButtonTemplate">
+                <Anchors>
+                    <Anchor point="BOTTOMLEFT" relativePoint="RIGHT">
+                        <Offset>
+                            <AbsDimension x="5" y="-3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Size>
+                    <AbsDimension x="45" y="25"/>
+                </Size>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.LoadText(this, "FM_CLT_ADDBUTTON")
+                    </OnLoad>
+                    <OnShow>
+                        RaidHeal.Menu.ShowText(this)
+                    </OnShow>
+                    <OnClick>
+                        RaidHeal.Menu.FilterMenu.ShiftLeft(this:GetParent())
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parent_RemoveButton" inherits="UIPanelButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="RIGHT">
+                        <Offset>
+                            <AbsDimension x="5" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Size>
+                    <AbsDimension x="45" y="25"/>
+                </Size>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.LoadText(this, "FM_CLT_REMOVEBUTTON")
+                    </OnLoad>
+                    <OnShow>
+                        RaidHeal.Menu.ShowText(this)
+                    </OnShow>
+                    <OnClick>
+                        RaidHeal.Menu.FilterMenu.ShiftRight(this:GetParent())
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnShow>
+                RaidHeal.Menu.UpdateListItems(this)
+                RaidHeal.Menu.UpdateList(this)
+                RaidHeal.Menu.ShowText(this)
+            </OnShow>
+        </Scripts>
+    </Frame>
+
+    <Frame name="RH_FilterMenu" inherits="RH_BaseFrame" parent="UIParent" hidden="true" enableMouse="true">
+        <Size>
+            <AbsDimension x="680" y="500"/>
+        </Size>
+        <Anchors>
+            <Anchor point="CENTER"/>
+        </Anchors>
+        <Layers>
+            <Layer>
+                <FontString name="$parent_TitleText" inherits="GameFontHighlight" justifyH="CENTER">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="2"/>
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="TOPRIGHT">
+                            <Offset>
+                                <AbsDimension x="-20" y="2"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Size>
+                        <AbsDimension x="200" y="20"/>
+                    </Size>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Frame name="$parent_BuffList" inherits="RH_ListTemplate">
+                <Size>
+                    <AbsDimension x="200" y="360"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-15" y="60"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Frames>
+                    <Frame name="$parent_ListItem9" id="9" inherits="RH_ListItemTemplate"/>
+                    <Frame name="$parent_ListItem10" id="10" inherits="RH_ListItemTemplate"/>
+                    <Frame name="$parent_ListItem11" id="11" inherits="RH_ListItemTemplate"/>
+                    <Frame name="$parent_ListItem12" id="12" inherits="RH_ListItemTemplate"/>
+                    <Frame name="$parent_ListItem13" id="13" inherits="RH_ListItemTemplate"/>
+                    <Frame name="$parent_ListItem14" id="14" inherits="RH_ListItemTemplate"/>
+                    <Frame name="$parent_ListItem15" id="15" inherits="RH_ListItemTemplate"/>
+                    <Frame name="$parent_ListItem16" id="16" inherits="RH_ListItemTemplate"/>
+                    <Frame name="$parent_ListItem17" id="17" inherits="RH_ListItemTemplate"/>
+                    <Frame name="$parent_ListItem18" id="18" inherits="RH_ListItemTemplate"/>
+                </Frames>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.CreateList(this)
+                        if this._listData then
+                            this._listData.FillListCallBack = RaidHeal.Menu.FilterMenu.FilterBuffList
+                        end
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <EditBox name="$parent_BuffListFilterBox" inherits="UIPanelEditBoxTemplate">
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" relativeTo="$parent_BuffList">
+                        <Offset>
+                            <AbsDimension x="0" y="-5"/>
+                        </Offset>
+                    </Anchor>
+                    <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent_BuffList">
+                        <Offset>
+                            <AbsDimension x="60" y="-25"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Layers>
+                    <Layer>
+                        <FontString name="$parent_Text" inherits="GameFontHighlight" justifyH="LEFT">
+                            <Size>
+                                <AbsDimension x="60" y="20"/>
+                            </Size>
+                            <Anchors>
+                                <Anchor point="LEFT">
+                                    <Offset>
+                                        <AbsDimension x="-60" y="0"/>
+                                    </Offset>
+                                </Anchor>
+                                <Anchor point="RIGHT" relativePoint="LEFT"/>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+                <Scripts>
+                    <OnLoad>
+                        this._type = "EditBox"
+                        this._text = getglobal(this:GetName() .. "_Text")
+                        RaidHeal.Menu.Bind(this, "RaidHeal.Menu.FilterMenu.Filter")
+                        RaidHeal.Menu.LoadText(this, "FM_BUFFLISTFILTER")
+                    </OnLoad>
+                    <OnShow>
+                        RaidHeal.Menu.ShowText(this)
+                        RaidHeal.Menu.ShowBoundElement(this)
+                    </OnShow>
+                    <OnValueChanged>
+                        RaidHeal.Menu.UpdateBoundElement(this)
+                        RaidHeal.Menu.UpdateList(RH_FilterMenu_BuffList)
+                    </OnValueChanged>
+                    <OnChar>
+                        RaidHeal.Menu.UpdateBoundElement(this)
+                        RaidHeal.Menu.UpdateList(RH_FilterMenu_BuffList)
+                    </OnChar>
+                </Scripts>
+            </EditBox>
+
+            <Frame name="$parent_IncludeList" inherits="RH_FilterMenu_CustomListTemplate">
+                <Size>
+                    <AbsDimension x="200" y="160"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativePoint="TOPLEFT" relativeTo="$parent_BuffList">
+                        <Offset>
+                            <AbsDimension x="-55" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        this._text = getglobal(this:GetName() .. "_Text")
+                        RaidHeal.Menu.CreateList(this)
+                        RaidHeal.Menu.LoadText(this, "FM_WHITELIST")
+                        if this._listData then
+                            this._listData.FillListCallBack = RaidHeal.Menu.FilterMenu.FilterIncludeList
+                        end
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame name="$parent_IgnoreList" inherits="RH_FilterMenu_CustomListTemplate">
+                <Size>
+                    <AbsDimension x="200" y="160"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_IncludeList">
+                        <Offset>
+                            <AbsDimension x="0" y="40"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        this._text = getglobal(this:GetName() .. "_Text")
+                        RaidHeal.Menu.CreateList(this)
+                        RaidHeal.Menu.LoadText(this, "FM_BLACKLIST")
+                        if this._listData then
+                            this._listData.FillListCallBack = RaidHeal.Menu.FilterMenu.FilterIgnoreList
+                        end
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+
+            <Frame name="$parent_FilterModeSelect" inherits="RH_OptionDropDownButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="10" y="60"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.LoadText(this, "FM_FILTERMODESELECT")
+                        RaidHeal.Menu.LoadDropDownList(this, "FilterModes")
+                        RaidHeal.Menu.Bind(this, "RaidHeal.Menu.FilterMenu.FilterMode", function(newValue)
+                            RaidHeal.Tasks.Add(function()
+                                if newValue:sub(1,6) == "Params" then
+                                    RH_FilterMenu_Params:Show()
+                                else
+                                    RH_FilterMenu_Params:Hide()
+                                end
+                            end, 0, 0, false)
+                            return true
+                        end)
+                    </OnLoad>
+                    <OnShow>
+                        RaidHeal.Menu.ShowBoundElement(this)
+                        RaidHeal.Menu.ShowText(this)
+
+                        if this._button.Value:sub(1,6) == "Params" then
+                            RH_FilterMenu_Params:Show()
+                        else
+                            RH_FilterMenu_Params:Hide()
+                        end
+                    </OnShow>
+                </Scripts>
+            </Frame>
+            <Frame name="$parent_FilterIndex" inherits="RH_OptionEditBoxTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_FilterModeSelect">
+                        <Offset>
+                            <AbsDimension x="0" y="5"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.LoadText(this, "FM_FILTERINDEX")
+                        RaidHeal.Menu.Bind(this, "RaidHeal.Menu.FilterMenu.FilterIndex")
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+
+            <Frame name="$parent_Params">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_FilterIndex">
+                        <Offset>
+                            <AbsDimension x="0" y="5"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Frames>
+                    <Frame name="$parent_Poison" inherits="RH_OptionCheckButtonTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "FM_PARAMS_POISON")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.FilterMenu.FilterParams.6")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Harmful" inherits="RH_OptionCheckButtonTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Poison">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "FM_PARAMS_HARMFUL")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.FilterMenu.FilterParams.10")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Curse" inherits="RH_OptionCheckButtonTemplate">
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Harmful">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "FM_PARAMS_CURSE")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.FilterMenu.FilterParams.9")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+            </Frame>
+
+            <Button name="$parent_SaveButton" inherits="UIPanelButtonTemplate">
+                <Size>
+                    <AbsDimension x="80" y="25"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-15" y="-10"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.LoadText(this, "FM_SAVEBUTTON")
+                    </OnLoad>
+                    <OnShow>
+                        RaidHeal.Menu.ShowText(this)
+                    </OnShow>
+                    <OnClick>
+                        RaidHeal.Menu.FilterMenu.Save()
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnLoad>
+                this._text = getglobal(this:GetName() .. "_TitleText")
+                RaidHeal.Menu.LoadText(this, "FM_TITLETEXT")
+            </OnLoad>
+            <OnShow>
+                RaidHeal.Menu.ShowText(this)
+            </OnShow>
+            <OnMouseDown>
+                this:StartMoving()
+            </OnMouseDown>
+            <OnMouseUp>
+                this:StopMovingOrSizing()
+            </OnMouseUp>
+        </Scripts>
+    </Frame>
+</Ui>

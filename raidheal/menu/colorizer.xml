@@ -1,0 +1,534 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/UI.xsd">
+    <Frame name="RH_Colorizer" inherits="RH_BaseFrame" hidden="true" enableMouse="true" parent="UIParent" frameStrata="HIGH">
+        <Size>
+            <AbsDimension x="210" y="300"/>
+        </Size>
+        <Frames>
+            <Frame name="$parent_Dynamic" inherits="RH_OptionDropDownButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset>
+                            <AbsDimension x="15" y="35"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Size>
+                    <AbsDimension x="180" y="20"/>
+                </Size>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.LoadText(this, "COLORIZER_DYNAMIC")
+                        RaidHeal.Menu.LoadDropDownList(this, "COLORIZER_DYNAMIC")
+                        RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Mode", function(value) RaidHeal.Menu.Colorizer.ShowMode(value) end)
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+            <Frame name="$parent_ClassColors" hidden="true">
+                <Size>
+                    <AbsDimension x="180" y="325"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Dynamic">
+                        <Offset>
+                            <AbsDimension x="0" y="10"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Frames>
+                    <Frame name="$parent_ColorIndex" inherits="RH_OptionDropDownButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"/>
+                            <Anchor point="TOPRIGHT"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "COLORIZER_CLS_INDEX")
+                                RaidHeal.Menu.LoadDropDownList(this, "COLORIZER_INDEX_CLS")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.ColorIndex")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_GM" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ColorIndex">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_ColorIndex">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.GM")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_WARRIOR" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_GM">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_GM">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.WARRIOR")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_RANGER" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_WARRIOR">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_WARRIOR">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.RANGER")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_THIEF" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_RANGER">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_RANGER">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.THIEF")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_MAGE" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_THIEF">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_THIEF">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.MAGE")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_AUGUR" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_MAGE">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_MAGE">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.AUGUR")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_KNIGHT" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_AUGUR">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_AUGUR">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.KNIGHT")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_WARDEN" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_KNIGHT">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_KNIGHT">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.WARDEN")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_DRUID" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_WARDEN">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_WARDEN">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.DRUID")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_HARPSYN" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_DRUID">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_DRUID">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.HARPSYN")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_PSYRON" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_HARPSYN">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_HARPSYN">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.PSYRON")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_DUELIST" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_PSYRON">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_PSYRON">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.DUELIST")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+            </Frame>
+            <Frame name="$parent_ResourceColors" hidden="true">
+                <Size>
+                    <AbsDimension x="180" y="125"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Dynamic">
+                        <Offset>
+                            <AbsDimension x="0" y="10"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Frames>
+                    <Frame name="$parent_ColorIndex" inherits="RH_OptionDropDownButtonTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"/>
+                            <Anchor point="TOPRIGHT"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "COLORIZER_RES_INDEX")
+                                RaidHeal.Menu.LoadDropDownList(this, "COLORIZER_INDEX_RES")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.ColorIndex")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Mana" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_ColorIndex">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_ColorIndex">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "COLORIZER_MANA")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.1")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Energy" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Mana">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Mana">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "COLORIZER_ENERGY")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.4")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Rage" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Energy">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Energy">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "COLORIZER_RAGE")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.2")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parent_Focus" inherits="RH_OptionColorTemplate">
+                        <Size>
+                            <AbsDimension x="180" y="20"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_Rage">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                            <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" relativeTo="$parent_Rage">
+                                <Offset>
+                                    <AbsDimension x="0" y="5"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>
+                                RaidHeal.Menu.LoadText(this, "COLORIZER_FOCUS")
+                                RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Colors.3")
+                            </OnLoad>
+                        </Scripts>
+                    </Frame>
+                </Frames>
+            </Frame>
+            <Frame name="$parent_SingleColor" inherits="RH_OptionColorTemplate" hidden="true">
+                <Size>
+                    <AbsDimension x="180" y="20"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parent_Dynamic" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="10"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.LoadText(this, "COLORIZER_SINGLECOLOR")
+                        RaidHeal.Menu.Bind(this, "RaidHeal.Menu.Colorizer.Color")
+                    </OnLoad>
+                </Scripts>
+            </Frame>
+
+            <Button name="$parent_SaveButton" inherits="UIPanelButtonTemplate">
+                <Size>
+                    <AbsDimension x="80" y="20"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-20" y="-10"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.LoadText(this, "COLORIZER_SAVE")
+                    </OnLoad>
+                    <OnShow>
+                        RaidHeal.Menu.ShowText(this)
+                    </OnShow>
+                    <OnClick>
+                        RaidHeal.Menu.Colorizer.Save()
+                        RH_Colorizer:Hide()
+                    </OnClick>
+                </Scripts>
+            </Button>
+
+            <Button name="$parent_LoadDefault" inherits="UIPanelButtonTemplate">
+                <Size>
+                    <AbsDimension x="80" y="20"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" relativeTo="$parent_SaveButton">
+                        <Offset>
+                            <AbsDimension x="-10" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnLoad>
+                        RaidHeal.Menu.LoadText(this, "COLORIZER_LOADDEFAULT")
+                    </OnLoad>
+                    <OnShow>
+                        RaidHeal.Menu.ShowText(this)
+                    </OnShow>
+                    <OnClick>
+                        RaidHeal.Menu.Colorizer.LoadPreset("RoM")
+                    </OnClick>
+                </Scripts>
+            </Button>
+        </Frames>
+        <Layers>
+            <Layer>
+                <FontString name="$parent_Title" inherits="GameFontHighlight">
+                    <Anchors>
+                        <Anchor point="TOP">
+                            <Offset>
+                                <AbsDimension x="-12" y="8"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                local title = getglobal(this:GetName() .. "_Title")
+                RaidHeal.Menu.LoadText(title, "COLORIZER_TITLE")
+            </OnLoad>
+            <OnShow>
+                local title = getglobal(this:GetName() .. "_Title")
+                RaidHeal.Menu.ShowText(title)
+            </OnShow>
+        </Scripts>
+    </Frame>
+</Ui>
